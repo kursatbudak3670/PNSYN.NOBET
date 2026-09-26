@@ -24,7 +24,7 @@
         table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.875rem; }
         th, td { border: 1px solid #e2e8f0; padding: 0.5rem; text-align: left; }
         th { background-color: #f8fafc; color: #475569; }
-        input[type="text"], input[type="number"], select { border: 1px solid #cbd5e1; padding: 0.25rem; border-radius: 0.25rem; font-size: 0.75rem; width: 90%; }
+        input[type="text"], input[type="number"], select { border: 1px solid #cbd5e1; padding: 0.25rem; border-radius: 0.25rem; font-size: 0.75rem; width: 95%; }
         .grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1rem; background-color: #f8fafc; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; }
         .grid-header { text-align: center; font-weight: bold; font-size: 0.75rem; color: #64748b; padding: 0.25rem 0; }
         .day-btn { padding: 0.75rem; border-radius: 0.25rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #e2e8f0; background-color: #ffffff; cursor: pointer; text-align: center; width: 100%; }
@@ -117,13 +117,21 @@
     </main>
 
     <script>
-    let belletmenler = JSON.parse(localStorage.getItem('belletmenler')) || [];
-    let kapaliGunler = JSON.parse(localStorage.getItem('kapaliGunler')) || [];
+    let belletmenler = [];
+    let kapaliGunler = [];
     let nobetAtamalari = {}; 
 
     window.onload = function() {
-        if (belletmenler.length === 0) { ornekKadroYukle(); } 
-        else { belletmenTablosuCiz(); }
+        let localB = localStorage.getItem('belletmenler');
+        let localK = localStorage.getItem('kapaliGunler');
+        if (localB) { belletmenler = JSON.parse(localB); }
+        if (localK) { kapaliGunler = JSON.parse(localK); }
+        
+        if (belletmenler.length === 0) { 
+            ornekKadroYukle(); 
+        } else { 
+            belletmenTablosuCiz(); 
+        }
         takvimOlustur();
     };
 
@@ -160,4 +168,3 @@
                     </select>
                 </td>
                 <td><input type="number" value="${b.hedefNobet}" onchange="belletmenGuncelle(${index}, 'hedefNobet', parseInt(this.value))" style="text-align:center; width:50px;"></td>
-                <td><input type="text" placeholder="Örn: 5,12" value="${b.istenenGunler.join(',')}" onchange="belletmenGunGuncelle(${index}, 'istenenGunler', this.value)"></td>
