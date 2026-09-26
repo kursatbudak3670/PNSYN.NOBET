@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pansiyon Belletmen Nöbet Dağıtım Sistemi</title>
+    <style>
+        body { background-color: #f1f5f9; color: #1e293b; font-family: sans-serif; margin: 0; padding-bottom: 3rem; }
+        header { background-color: #1e1b4b; color: #ffffff; padding: 1.5rem; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); }
+        .header-container { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; }
+        h1 { margin: 0; font-size: 1.5rem; font-weight: bold; }
+        p { margin: 0.25rem 0 0 0; color: #c7d2fe; font-size: 0.875rem; }
+        .btn-green { background-color: #059669; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: 600; margin-right: 0.5rem; }
+        .btn-red { background-color: #dc2626; color: white; border: none; padding: 0.5rem 1rem; border-radius: 0.25rem; cursor: pointer; font-weight: 600; }
+        main { max-width: 1200px; margin: 1.5rem auto; padding: 0 1rem; }
+        .tabs { display: flex; border-bottom: 1px solid #cbd5e1; margin-bottom: 1.5rem; gap: 0.5rem; }
+        .tab-btn { background: none; border: none; padding: 0.5rem 1rem; font-weight: 600; color: #475569; cursor: pointer; border-bottom: 2px solid transparent; }
+        .tab-btn.active { color: #4f46e5; border-bottom: 2px solid #4f46e5; background-color: #ffffff; border-radius: 0.25rem 0.25rem 0 0; }
+        section { background-color: #ffffff; padding: 1.5rem; border-radius: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+        .sec-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+        h2 { margin: 0; font-size: 1.25rem; color: #334155; }
+        .btn-slate { background-color: #e2e8f0; color: #334155; border: none; padding: 0.4rem 0.8rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.75rem; font-weight: 600; margin-right: 0.5rem; }
+        .btn-indigo { background-color: #4f46e5; color: white; border: none; padding: 0.4rem 0.8rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.75rem; font-weight: 600; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.875rem; }
+        th, td { border: 1px solid #e2e8f0; padding: 0.5rem; text-align: left; }
+        th { background-color: #f8fafc; color: #475569; }
+        input[type="text"], input[type="number"], select { border: 1px solid #cbd5e1; padding: 0.25rem; border-radius: 0.25rem; font-size: 0.75rem; width: 90%; }
+        .grid-7 { display: grid; grid-template-columns: repeat(7, 1fr); gap: 0.5rem; margin-top: 1rem; background-color: #f8fafc; padding: 1rem; border: 1px solid #e2e8f0; border-radius: 0.25rem; }
+        .grid-header { text-align: center; font-weight: bold; font-size: 0.75rem; color: #64748b; padding: 0.25rem 0; }
+        .day-btn { padding: 0.75rem; border-radius: 0.25rem; font-size: 0.875rem; font-weight: 600; border: 1px solid #e2e8f0; background-color: #ffffff; cursor: pointer; text-align: center; width: 100%; }
+        .day-btn.closed { background-color: #fecaca; color: #991b1b; border-color: #fca5a5; }
+        .hidden { display: none !important; }
+        .btn-delete { background: none; border: none; color: #dc2626; font-weight: bold; cursor: pointer; font-size: 0.75rem; }
+        @media print { .no-print { display: none !important; } }
+    </style>
+</head>
+<body>
+
+    <header class="no-print">
+        <div class="header-container">
+            <div>
+                <h1>MEB Pansiyon Belletmen Nöbet Dağıtım Sistemi</h1>
+                <p>Günlük 3 Nöbetçi | Adil & Otomatik Dağıtım</p>
+            </div>
+            <div>
+                <button onclick="verileriKaydet()" class="btn-green">Kaydet</button>
+                <button onclick="verileriSifirla()" class="btn-red">Sıfırla</button>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <div class="tabs no-print">
+            <button onclick="tabDegistir('tab-belletmenler')" id="btn-belletmenler" class="tab-btn active">1. Belletmen Listesi</button>
+            <button onclick="tabDegistir('tab-takvim')" id="btn-takvim" class="tab-btn">2. Ay & Tatil Ayarları</button>
+            <button onclick="tabDegistir('tab-dagitim')" id="btn-dagitim" class="tab-btn">3. Nöbet Dağıtımı & Çizelge</button>
+        </div>
+
+        <!-- TAB 1 -->
+        <section id="tab-belletmenler" class="tab-content">
+            <div class="sec-header">
+                <h2>Belletmen Kadrosu ve Ay Özel Kuralları</h2>
+                <div>
+                    <button onclick="ornekKadroYukle()" class="btn-slate">40 Kişilik Örnek Kadro Yükle</button>
+                    <button onclick="belletmenEkle()" class="btn-indigo">+ Yeni Belletmen</button>
+                </div>
+            </div>
+            <div style="overflow-x: auto;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ad Soyad</th>
+                            <th>Tür</th>
+                            <th>Hedef Nöbet</th>
+                            <th>İstediği Günler</th>
+                            <th>İstemediği Günler</th>
+                            <th style="text-align:center;">İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="belletmen-listesi-tbody"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- TAB 2 -->
+        <section id="tab-takvim" class="tab-content hidden">
+            <h2>Ay Seçimi ve Kapatılacak Günler</h2>
+            <div style="display:flex; gap:1rem; align-items:center; margin-top:1rem;">
+                <div>
+                    <label style="font-size:0.75rem; font-weight:bold; color:#475569;">Yıl: </label>
+                    <input type="number" id="secili-yil" value="2026" style="width:70px; padding:0.4rem;">
+                </div>
+                <div>
+                    <label style="font-size:0.75rem; font-weight:bold; color:#475569;">Ay: </label>
+                    <select id="secili-ay" onchange="takvimOlustur()" style="width:100px; padding:0.4rem;">
+                        <option value="0">Ocak</option><option value="1">Şubat</option><option value="2" selected>Mart</option>
+                        <option value="3">Nisan</option><option value="4">Mayıs</option><option value="5">Haziran</option>
+                        <option value="6">Temmuz</option><option value="7">Ağustos</option><option value="8">Eylül</option>
+                        <option value="9">Ekim</option><option value="10">Kasım</option><option value="11">Aralık</option>
+                    </select>
+                </div>
+            </div>
+            <div id="takvim-grid" class="grid-7"></div>
+        </section>
+
+        <!-- TAB 3 -->
+        <section id="tab-dagitim" class="tab-content hidden">
+            <div class="sec-header">
+                <h2>Nöbet Dağıtım Motoru</h2>
+                <div>
+                    <button onclick="nobetOtomatikDagit()" class="btn-indigo" style="font-size:0.875rem; padding:0.5rem 1rem;">⚡ Otomatik Nöbet Dağıt</button>
+                    <button onclick="window.print()" class="btn-slate" style="font-size:0.875rem; padding:0.5rem 1rem;">🖨️ Yazdır / PDF</button>
+                </div>
+            </div>
+            <div id="dagitim-sonuc-container"></div>
+        </section>
+    </main>
+
+    <script>
+    let belletmenler = JSON.parse(localStorage.getItem('belletmenler')) || [];
+    let kapaliGunler = JSON.parse(localStorage.getItem('kapaliGunler')) || [];
+    let nobetAtamalari = {}; 
+
+    window.onload = function() {
+        if (belletmenler.length === 0) { ornekKadroYukle(); } 
+        else { belletmenTablosuCiz(); }
+        takvimOlustur();
+    };
+
+    function tabDegistir(tabId) {
+        document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+        document.querySelectorAll('.tab-btn').forEach(el => el.classList.remove('active'));
+        document.getElementById(tabId).classList.remove('hidden');
+        document.getElementById('btn-' + tabId.replace('tab-', '')).classList.add('active');
+    }
+
+    function ornekKadroYukle() {
+        belletmenler = [];
+        for (let i = 1; i <= 33; i++) {
+            belletmenler.push({ id: 'I' + i, ad: 'İç Belletmen ' + i, tur: 'İç', hedefNobet: 3, istenenGunler: [], istenmeyenGunler: [] });
+        }
+        for (let i = 1; i <= 7; i++) {
+            belletmenler.push({ id: 'D' + i, ad: 'Dış Belletmen ' + i, tur: 'Dış', hedefNobet: 2, istenenGunler: [], istenmeyenGunler: [] });
+        }
+        belletmenTablosuCiz();
+    }
+
+    function belletmenTablosuCiz() {
+        const tbody = document.getElementById('belletmen-listesi-tbody');
+        if(!tbody) return;
+        tbody.innerHTML = '';
+        belletmenler.forEach((b, index) => {
+            const tr = document.createElement('tr');
+            tr.innerHTML = `
+                <td><input type="text" value="${b.ad}" onchange="belletmenGuncelle(${index}, 'ad', this.value)"></td>
+                <td>
+                    <select onchange="belletmenGuncelle(${index}, 'tur', this.value)">
+                        <option value="İç" ${b.tur === 'İç' ? 'selected' : ''}>İç</option>
+                        <option value="Dış" ${b.tur === 'Dış' ? 'selected' : ''}>Dış</option>
+                    </select>
+                </td>
+                <td><input type="number" value="${b.hedefNobet}" onchange="belletmenGuncelle(${index}, 'hedefNobet', parseInt(this.value))" style="text-align:center; width:50px;"></td>
+                <td><input type="text" placeholder="Örn: 5,12" value="${b.istenenGunler.join(',')}" onchange="belletmenGunGuncelle(${index}, 'istenenGunler', this.value)"></td>
